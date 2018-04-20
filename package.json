@@ -2,21 +2,22 @@
   "name": "scene-partner-api",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node server.js",
     "test": "mocha test/test-server.js"
   },
   "author": "ET",
   "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
+    "express": "^4.16.3",
+    "mongoose": "^5.0.15"
+  },
   "devDependencies": {
     "chai": "^4.1.2",
     "chai-http": "^4.0.0",
     "mocha": "^5.1.1"
-  },
-  "dependencies": {
-    "body-parser": "^1.18.2",
-    "express": "^4.16.3",
-    "mongoose": "^5.0.15"
   }
 }
