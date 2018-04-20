@@ -1,0 +1,11 @@
+language: node_js
+node_js: node
+services:
+- mongodb
+deploy:
+  provider: heroku
+  api_key:
+    secure: YbjSQTD4v0QY3Kk/ddQwYq4DCdgI2wfH86T2ekY4W3ESXdY+cylgAkTtWS+7I3yJMnobuCzCfJrF6N+56sFuw4kKUPnU98p6ayOFwFULTamBfFWEencAWYMUhMsoXqlZFyEaK8zW8IUJBjpOGDSl86uTUshe3iuOU1Y/7klvaQWXn/NxLaY5A7lzojIEqTIGG8ObB0E1V2mqVvx2S/xzKytzBDEwO4b3bPBChSer+lbg8gi94MHDiKMYn/Tdicy+aDQwhQF7C1QGbpPHnb0mVEC5Fi/5ct+AN/UQjyAXXixxsNHmzn+5921Y0h0SooR5D5tFIU0W3bdwEFb+beADRndG9/8zY3EI8jywzY/Fjp+VSt7Xc3jsQbzcKFe7hGJaa6yOGikfpQo7OJJWJD24oIU82SkLG4pDw7o9JSJET68zMEBOwVXDfL1PSIbXrbmOm1KqurKyr+oQHjzb5EuCLfRSzV2ye4bzGxcUWw4MLArMShlygV0OvQ19j5EC/E0E34gKoZqe4l8QWCRTiSM65CkSrY+O/QSvKLarW8s56YQ5ESv5EMaF9EiQScvz7vxPFjLxPMG4HsVaGDK1vEAfPc2YY9c5/CSwsRnHEpVXN1GfwTU7zZVz6Ua+lv+1rXrLEQ9rD1aZGzDudf+/c3lKIxZDSgUQRYXgXn28Smf1ogE=
+  app: agile-reef-16995
+  on:
+    repo: Vlodnik/Scene-Partner-API
