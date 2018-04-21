@@ -11,7 +11,7 @@ mongoose.Promise = global.Promise;
 const app = express();
 
 const cors = require('cors');
-const { CLIENT_ORIGIN } = require('./config');
+const { CLIENT_ORIGIN, DATABASE_URL, PORT } = require('./config');
 
 const corsOptions = {
   origin: CLIENT_ORIGIN,
@@ -34,6 +34,39 @@ app.get('/api/*', (req, res) => {
   res.json({ ok: true });
 });
 
-app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
+let server;
 
-module.exports = { app };
+function runServer(databaseUrl = DATABASE_URL, port = PORT) {
+  return new Promise((resolve, reject) => {
+    mongoose.connect(databaseUrl, err => {
+      if(err) {
+        return reject(err);
+      }
+
+      server = app.listen(port, () => {
+        console.log(`Scene-Partner app is listening on port ${ port }`);
+        resolve();
+      })
+      .on('error', err => {
+        mongoose.disconnect();
+        reject(err);
+      });
+    });
+  });
+}
+
+function closeServer() {
+  return mongoose.disconnect().then(() => {
+    return new Promise((resolve, reject) => {
+      console.log('Closing server');
+      server.close(err => {
+        if(err) {
+          return reject(err);
+        }
+        resolve();
+      });
+    });
+  });
+}
+
+module.exports = { app, runServer, closeServer };
