@@ -28,8 +28,6 @@ passport.use(jwtStrategy);
 
 app.use('/users', usersRouter);
 
-const PORT = process.env.PORT || 3000;
-
 app.get('/api/*', (req, res) => {
   res.json({ ok: true });
 });
