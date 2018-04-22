@@ -94,7 +94,7 @@ router.post('/', (req, res) => {
   return User
     .find({ username })
     .count()
-    .then(function(count) {
+    .then(count => {
       if(count > 0) {
         return Promise.reject({
           code: 422,
@@ -105,17 +105,17 @@ router.post('/', (req, res) => {
       }
       return User.hashPassword(password)
     })
-    .then(function(hash) {
+    .then(hash => {
       return User.create({
         username,
         password: hash
       });
     })
-    .then(function(user) {
+    .then(user => {
       const authToken = createAuthToken(user);
       return res.status(201).json({ authToken });
     })
-    .catch(function(err) {
+    .catch(err => {
       if(err.reason === 'ValidationError') {
         return res.status(err.code).json(err);
       }

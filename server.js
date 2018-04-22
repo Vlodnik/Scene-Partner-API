@@ -19,6 +19,7 @@ const corsOptions = {
 };
 
 const usersRouter = require('./routes/users');
+const audioRouter = require('./routes/audio');
 const { localStrategy, jwtStrategy } = require('./strategies');
 
 app.use(cors());
@@ -27,6 +28,7 @@ passport.use(localStrategy);
 passport.use(jwtStrategy);
 
 app.use('/users', usersRouter);
+app.use('/audio', audioRouter);
 
 app.get('/api/*', (req, res) => {
   res.json({ ok: true });
