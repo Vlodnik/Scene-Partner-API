@@ -34,15 +34,33 @@ describe('Scene-Partner API', function() {
   //       res.should.be.json;
   //     });
   //   });
+  describe('POST endpoint for new users', function() {
+    it('should create a new user and send a 201 status code', function() {
+      const newUser = {
+        username: faker.name.firstName() + faker.name.lastName(),
+        password: faker.internet.password()
+      }
+
+      return chai.request(app)
+        .post('/')
+        .send(newUser)
+        .then(function(res) {
+          res.should.be.json;
+          res.should.have.status(201)
+          res.body.authToken.should.be.a.jwt;
+        });
+
+    });
+  });
 
   describe('POST endpoint for creating jwts on login', function() {
-
     it('should return a jwt when given correct username and password', function() {
       const testUser = {
         username: faker.name.firstName() + faker.name.lastName(),
         password: faker.internet.password()
       };
       const encryptedPassword = bcrypt.hash(testUser.password, 10);
+
       return User.hashPassword(testUser.password)
         .then(function(hash) {
           return User.create({username: testUser.username, password: hash})
