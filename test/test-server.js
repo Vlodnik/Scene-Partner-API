@@ -42,14 +42,20 @@ describe('Scene-Partner API', function() {
       }
 
       return chai.request(app)
-        .post('/')
+        .post('/users')
         .send(newUser)
         .then(function(res) {
           res.should.be.json;
           res.should.have.status(201)
           res.body.authToken.should.be.a.jwt;
+        })
+        .then(function() {
+          return User
+            .findOne({username: newUser.username})
+            .then(function(user) {
+              user.username.should.equal(newUser.username);
+            });
         });
-
     });
   });
 
