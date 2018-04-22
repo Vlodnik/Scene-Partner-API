@@ -26,12 +26,38 @@ describe('Scene-Partner API', function() {
     return closeServer();
   });
 
-  it('should 200 on GET requests', function() {
-    return chai.request(app)
-      .get('/api/fooooo')
-      .then(function(res) {
-        res.should.have.status(200);
-        res.should.be.json;
-      });
+  // it('should 200 on GET requests', function() {
+  //   return chai.request(app)
+  //     .get('/api/fooooo')
+  //     .then(function(res) {
+  //       res.should.have.status(200);
+  //       res.should.be.json;
+  //     });
+  //   });
+
+  describe('POST endpoint for creating jwts on login', function() {
+
+    it('should return a jwt when given correct username and password', function() {
+      const testUser = {
+        username: faker.name.firstName() + faker.name.lastName(),
+        password: faker.internet.password()
+      };
+      const encryptedPassword = bcrypt.hash(testUser.password, 10);
+      return User.hashPassword(testUser.password)
+        .then(function(hash) {
+          return User.create({username: testUser.username, password: hash})
+            .then(function(item){
+              return chai.request(app)
+                .post('/users/login')
+                .send(testUser)
+            })
+            .then(function(res) {
+              res.should.be.json;
+              res.should.have.status(200);
+              res.body.authToken.should.be.a.jwt;
+            });
+        });
     });
+  });
+
 });

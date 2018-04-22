@@ -21,7 +21,7 @@ const corsOptions = {
 const usersRouter = require('./routes/users');
 const { localStrategy, jwtStrategy } = require('./strategies');
 
-app.use(cors(corsOptions));
+app.use(cors());
 
 passport.use(localStrategy);
 passport.use(jwtStrategy);
@@ -65,6 +65,10 @@ function closeServer() {
       });
     });
   });
+}
+
+if (require.main === module) {
+  runServer().catch(err => console.error(err));
 }
 
 module.exports = { app, runServer, closeServer };
