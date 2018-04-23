@@ -205,17 +205,42 @@ describe('Scene-Partner API', function() {
         })
         .then(function(scene) {
           sceneId = scene._id;
-        })
-        .then(function() {
+
           return chai.request(app)
-            .get(`/scenes/${sceneId}`)
-            .set('Authorization', `Bearer ${ testJwt }`)
+          .get(`/scenes/${sceneId}`)
+          .set('Authorization', `Bearer ${ testJwt }`)
         })
         .then(function(res) {
           console.log(res.body);
           res.should.be.json;
           res.should.have.status(200);
           res.body.user.should.equal(testUser);
+        });
+    });
+  });
+
+  describe('POST endpoint', function() {
+    it('should create a new scene object and return 201', function() {
+      let newScene;
+      let testJwt;
+
+      return User
+        .findOne()
+        .then(function(user) {
+          newScene = generateSceneData(user.username);
+          testJwt = createAuthToken(user.serialize());
+
+          return chai.request(app)
+            .post('/scenes')
+            .set('Authorization', `Bearer ${ testJwt }`)
+        })
+        .then(function(res) {
+          res.should.be.json;
+          res.should.have.status(201);
+          res.body.user.should.equal(newScene.user);
+          res.body.editing.should.equal(newScene.editing);
+          res.body.title.should.equal(newScene.title);
+          res.body.userCharacter.should.equal(newScene.userCharacter);
         });
     });
   });
