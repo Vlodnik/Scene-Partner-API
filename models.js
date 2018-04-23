@@ -4,6 +4,32 @@ const bcrypt = require('bcryptjs');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
+const sceneSchema = mongoose.Schema({
+  user: { type: String, required: true },
+  editing: Boolean,
+  title: String,
+  userCharacter: String,
+  lines: [
+    {
+      id: String,
+      character: String,
+      text: String
+    }
+  ]
+});
+
+sceneSchema.methods.serialize = function() {
+  return {
+    user: this.user,
+    editing: this.editing,
+    title: this.title,
+    userCharacter: this.userCharacter,
+    lines: this.lines
+  };
+}
+
+const Scene = mongoose.model('Scene', sceneSchema);
+
 const userSchema = mongoose.Schema({
   username: {
     type: String,
@@ -32,4 +58,4 @@ userSchema.statics.hashPassword = function(password) {
 
 const User = mongoose.model('User', userSchema);
 
-module.exports = { User };
+module.exports = { Scene, User };

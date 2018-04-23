@@ -16,3 +16,15 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
 router.use(jwtAuth);
 
 // GET endpoint for a user's scenes
+router.get('/', (req, res) => {
+  Scene
+    .find({user: req.body.username})
+    .then(scenes => {
+      res.status(200).json(scenes);
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Internal server error: GET' });
+    });
+});
+
+module.exports = router;
