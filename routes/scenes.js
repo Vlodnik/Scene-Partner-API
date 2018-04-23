@@ -18,7 +18,7 @@ router.use(jwtAuth);
 // GET endpoint for a user's scenes
 router.get('/', (req, res) => {
   Scene
-    .find({user: req.body.username})
+    .find({user: req.user.username})
     .then(scenes => {
       res.status(200).json(scenes);
     })

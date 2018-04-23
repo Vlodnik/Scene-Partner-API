@@ -7,9 +7,10 @@ const faker = require('faker');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const shortid = require('shortid');
 const mongoose = require('mongoose');
 
-const { User } = require('../models');
+const { User, Scene } = require('../models');
 const { app, runServer, closeServer } = require('../server');
 const config = require('../config');
 
@@ -17,9 +18,89 @@ const should = chai.should();
 chai.use(chaiHttp);
 chai.use(chaiJwt);
 
+function seedUserData() {
+  console.info('Seeding user data');
+  const seedData = [];
+
+  for(let i = 1; i <= 5; i++) {
+    seedData.push(generateUserData());
+  }
+
+  return User.insertMany(seedData);
+}
+
+function generateUserData() {
+  return {
+    username: faker.name.firstName() + faker.name.lastName(),
+    password: faker.internet.password()
+  };
+}
+
+function seedSceneData() {
+  console.info('Seeding scene data');
+  const seedData = [];
+
+  return User
+    .find()
+    .then(function(users) {
+      users.forEach(function(user) {
+        for(let i = 1; i <= 5; i++) {
+          const newScene = generateSceneData(user.username);
+          seedData.push(newScene);
+        }
+      });
+    })
+    .then(function() {
+      return Scene.insertMany(seedData)
+    });
+}
+
+function generateSceneData(username) {
+  return {
+    user: username,
+    editing: faker.random.boolean(),
+    title: faker.random.words(),
+    userCharacter: 'all',
+    lines: [
+      {
+        id: shortid.generate(),
+        character: faker.name.firstName(),
+        text: faker.lorem.sentence()
+      }
+    ]
+  };
+}
+
+function tearDownDb() {
+  console.warn('Tearing down database');
+  mongoose.connection.dropDatabase();
+}
+
+function createAuthToken(user) {
+  return jwt.sign({user}, config.JWT_SECRET, {
+    subject: user.username,
+    expiresIn: config.JWT_EXPIRY,
+    algorithm: 'HS256'
+  });
+};
+
 describe('Scene-Partner API', function() {
   before(function() {
     return runServer(config.TEST_DATABASE_URL);
+  });
+
+  beforeEach(function(done) {
+    seedUserData()
+      .then(function() {
+        return seedSceneData();
+      })
+      .then(function() {
+        return done();
+      });
+  });
+
+  afterEach(function() {
+    return tearDownDb();
   });
 
   after(function() {
@@ -80,6 +161,33 @@ describe('Scene-Partner API', function() {
               res.should.have.status(200);
               res.body.authToken.should.be.a.jwt;
             });
+        });
+    });
+  });
+
+  describe('GET endpoint', function() {
+
+    it('should respond with json scenes matching username', function() {
+      let testUser;
+      let testJwt;
+
+      return User
+        .findOne()
+        .then(function(user) {
+          testUser = user.username;
+          testJwt = createAuthToken(user.serialize());
+        })
+        .then(function() {
+          return chai.request(app)
+            .get('/scenes')
+            .set('Authorization', `Bearer ${ testJwt }`)
+        })
+        .then(function(res) {
+          res.should.be.json;
+          res.should.have.status(200);
+          for(let scene in res.body) {
+            res.body[scene].user.should.equal(testUser);
+          }
         });
     });
   });

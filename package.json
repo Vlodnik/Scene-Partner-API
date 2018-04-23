@@ -23,6 +23,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "shortid": "^2.2.8",
     "watson-developer-cloud": "^3.3.0"
   },
   "devDependencies": {
