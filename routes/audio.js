@@ -26,7 +26,7 @@ router.use(jsonParser);
 router.get('/:text', localAuth, (req, res) => {
   console.log('Received request to audio GET endpoint');
   const params = {
-    text: req.body.text,
+    text: req.params.text,
     voice: 'en-US_AllisonVoice',
     accept: 'audio/wav'
   };
