@@ -27,4 +27,21 @@ router.get('/', (req, res) => {
     });
 });
 
+router.get('/:id', (req, res) => {
+  Scene
+    .findById(req.params.id)
+    .then(scene => {
+      if(scene.user === req.user.username) {
+        res.status(200).json(scene.serialize());
+      } else {
+        const message = 'Unauthorized';
+        console.error(message);
+        return res.status(401).send(message);
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Internal server error: GET id' });
+    })
+});
+
 module.exports = router;

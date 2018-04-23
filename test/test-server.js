@@ -7,7 +7,6 @@ const faker = require('faker');
 const passport = require('passport');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const shortid = require('shortid');
 const mongoose = require('mongoose');
 
 const { User, Scene } = require('../models');
@@ -63,7 +62,6 @@ function generateSceneData(username) {
     userCharacter: 'all',
     lines: [
       {
-        id: shortid.generate(),
         character: faker.name.firstName(),
         text: faker.lorem.sentence()
       }
@@ -190,6 +188,37 @@ describe('Scene-Partner API', function() {
           }
         });
     });
+
+    it('should respond with a scene object based on ID', function() {
+      let sceneId;
+      let testUser;
+      let testJwt;
+
+      return User
+        .findOne()
+        .then(function(user) {
+          testUser = user.username;
+          testJwt = createAuthToken(user.serialize());
+        })
+        .then(function() {
+          return Scene.findOne({user: testUser})
+        })
+        .then(function(scene) {
+          sceneId = scene._id;
+        })
+        .then(function() {
+          return chai.request(app)
+            .get(`/scenes/${sceneId}`)
+            .set('Authorization', `Bearer ${ testJwt }`)
+        })
+        .then(function(res) {
+          console.log(res.body);
+          res.should.be.json;
+          res.should.have.status(200);
+          res.body.user.should.equal(testUser);
+        });
+    });
   });
+
 
 });
