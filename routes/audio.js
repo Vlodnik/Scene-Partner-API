@@ -19,29 +19,29 @@ const router = express.Router();
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
-const localAuth = passport.authenticate('local', { session: false });
+const jwtAuth = passport.authenticate('jwt', { session: false });
 router.use(jsonParser);
 
 // endpoint for getting audio files
-router.get('/:text', localAuth, (req, res) => {
+router.get('/', (req, res) => {
   console.log('Received request to audio GET endpoint');
   const params = {
-    text: req.params.text,
+    text: req.query.text,
     voice: 'en-US_AllisonVoice',
-    accept: 'audio/wav'
+    accept: 'audio/mp3'
   };
 
-  const filePath = text_to_speech.synthesize(params).on('error', function(err) {
+  text_to_speech.synthesize(params).on('error', function(err) {
     console.log('Error:', err);
-  }).pipe(fs.createWriteStream('text.wav'));
-  console.log(`The filePath is ${filePath}`);
+  }).pipe(fs.createWriteStream('text.mp3'));
 
-  res.writeHead(200, {
-    'Content-Type': 'audio/wav'
-  });
+  // res.writeHead(200, {
+  //   'Content-Type': 'audio/wav'
+  // });
 
-  fs.readFile(filePath, function(err, data) {
-    response.send(data);
+  fs.readFile('text.wav', function(err, data) {
+    console.log(data);
+    res.send(data);
   });
 
   // res.status(200).send(
@@ -49,6 +49,10 @@ router.get('/:text', localAuth, (req, res) => {
   //     console.log('Error:', err);
   //   }).pipe(fs.createWriteStream('text.wav'))
   // );
+});
+
+router.get('/test', (req, res) => {
+  res.send('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
 });
 
 module.exports = router;

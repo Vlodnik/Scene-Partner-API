@@ -44,8 +44,8 @@ router.get('/:id', (req, res) => {
     })
 });
 
-router.post('/', jsonParser, (req, res) {
-  
-});
+// router.post('/', jsonParser, (req, res) {
+//
+// });
 
 module.exports = router;
