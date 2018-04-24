@@ -31,15 +31,17 @@ router.get('/', (req, res) => {
     accept: 'audio/mp3'
   };
 
+  const filePath = `public/${req.query.lineId}.mp3`;
+
   text_to_speech.synthesize(params).on('error', function(err) {
     console.log('Error:', err);
-  }).pipe(fs.createWriteStream(`public.mp3`));
+  }).pipe(fs.createWriteStream(filePath));
 
   // res.writeHead(200, {
   //   'Content-Type': 'audio/wav'
   // });
 
-  fs.readFile('text.wav', function(err, data) {
+  fs.readFile(filePath, function(err, data) {
     console.log(data);
     res.send(data);
   });
