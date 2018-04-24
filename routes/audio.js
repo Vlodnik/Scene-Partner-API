@@ -33,7 +33,7 @@ router.get('/', (req, res) => {
 
   text_to_speech.synthesize(params).on('error', function(err) {
     console.log('Error:', err);
-  }).pipe(fs.createWriteStream('text.mp3'));
+  }).pipe(fs.createWriteStream(`public.mp3`));
 
   // res.writeHead(200, {
   //   'Content-Type': 'audio/wav'

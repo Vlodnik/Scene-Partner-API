@@ -44,8 +44,30 @@ router.get('/:id', (req, res) => {
     })
 });
 
-// router.post('/', jsonParser, (req, res) {
-//
-// });
+router.post('/', jsonParser, (req, res) => {
+  if(!(req.user.username && req.body.title)) {
+    const message = 'Request must come from a user and have a title';
+    console.error(message);
+    return res.status(400).send(message);
+  }
+
+  console.log('Creating new scene object');
+  const newScene = {
+    user: req.user.username,
+    title: req.body.title,
+    editing: req.body.editing || true,
+    userCharacter: req.body.userCharacter || 'all',
+    lines: req.body.lines || []
+  };
+
+  Scene
+    .create(newScene)
+    .then(scene => {
+      res.status(201).json(scene)
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Internal server error: POST' });
+    });
+});
 
 module.exports = router;

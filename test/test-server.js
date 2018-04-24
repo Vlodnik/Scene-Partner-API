@@ -233,6 +233,7 @@ describe('Scene-Partner API', function() {
           return chai.request(app)
             .post('/scenes')
             .set('Authorization', `Bearer ${ testJwt }`)
+            .send(newScene)
         })
         .then(function(res) {
           res.should.be.json;
@@ -244,6 +245,5 @@ describe('Scene-Partner API', function() {
         });
     });
   });
-
 
 });
