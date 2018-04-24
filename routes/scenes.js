@@ -55,7 +55,7 @@ router.post('/', jsonParser, (req, res) => {
   const newScene = {
     user: req.user.username,
     title: req.body.title,
-    editing: req.body.editing || true,
+    editing: req.body.editing,
     userCharacter: req.body.userCharacter || 'all',
     lines: req.body.lines || []
   };
@@ -67,6 +67,48 @@ router.post('/', jsonParser, (req, res) => {
     })
     .catch(err => {
       res.status(500).json({ message: 'Internal server error: POST' });
+    });
+});
+
+const sceneFields = [
+  'title',
+  'editing',
+  'userCharacter',
+  'lines'
+];
+
+router.put('/:id', jsonParser, (req, res) => {
+  if(req.body.id !== req.params.id) {
+    const message = `Request body ID ${ req.body.id} does not match request path ID ${ req.params.id }`;
+    console.error(message);
+    return res.status(400).send(message);
+  }
+
+  console.log(`Updating scene object ${ req.params.id }`);
+  const newScene = {};
+  sceneFields.forEach(field => {
+    if(field in req.body) {
+      newScene[field] = req.body[field]
+    }
+  });
+
+  Scene
+    .findById(req.params.id)
+    .then(scene => {
+      if(scene.user === req.user.username) {
+        Scene
+          .findByIdAndUpdate(req.params.id, { $set: newScene })
+          .then(() => {
+            res.status(200).json({ message: 'Saved!' });
+          })
+      } else {
+        const message = 'Unauthorized';
+        console.error(message);
+        return res.status(401).send(message);
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Internal server error: PUT' });
     });
 });
 

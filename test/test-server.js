@@ -211,7 +211,6 @@ describe('Scene-Partner API', function() {
           .set('Authorization', `Bearer ${ testJwt }`)
         })
         .then(function(res) {
-          console.log(res.body);
           res.should.be.json;
           res.should.have.status(200);
           res.body.user.should.equal(testUser);
@@ -242,6 +241,55 @@ describe('Scene-Partner API', function() {
           res.body.editing.should.equal(newScene.editing);
           res.body.title.should.equal(newScene.title);
           res.body.userCharacter.should.equal(newScene.userCharacter);
+        });
+    });
+  });
+
+  describe('PUT endpoint', function() {
+    it('modifies an existing scene object based on ID', function() {
+      let updateData = {
+        userCharacter: 'BreadBreadBread',
+        lines: [
+          {
+            character: 'BreadBreadBread',
+            text: 'sosososososososososos'
+          }
+        ]
+      };
+      let testJwt;
+
+      return User
+        .findOne()
+        .then(function(user) {
+          updateData.user = user.username;
+          testJwt = createAuthToken(user.serialize());
+
+          return Scene
+            .findOne({ user: user.username })
+        })
+        .then(function(scene) {
+          scene.editing ? updateData.editing = false : updateData.editing = true;
+          updateData.id = scene._id;
+          updateData.title = scene.title;
+
+          return chai.request(app)
+            .put(`/scenes/${ scene._id }`)
+            .set('Authorization', `Bearer ${ testJwt }`)
+            .send(updateData)
+        })
+        .then(function(res) {
+          res.should.be.json;
+          res.should.have.status(200);
+
+          return Scene.findById(updateData.id)
+        })
+        .then(function(scene) {
+          scene.title.should.equal(updateData.title);
+          scene.user.should.equal(updateData.user);
+          scene.editing.should.equal(updateData.editing);
+          scene.userCharacter.should.equal(updateData.userCharacter);
+          scene.lines[0].character.should.equal(updateData.lines[0].character);
+          scene.lines[0].text.should.equal(updateData.lines[0].text);
         });
     });
   });

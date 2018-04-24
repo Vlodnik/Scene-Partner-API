@@ -19,6 +19,7 @@ const sceneSchema = mongoose.Schema({
 
 sceneSchema.methods.serialize = function() {
   return {
+    id: this._id,
     user: this.user,
     editing: this.editing,
     title: this.title,
