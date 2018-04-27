@@ -105,14 +105,6 @@ describe('Scene-Partner API', function() {
     return closeServer();
   });
 
-  // it('should 200 on GET requests', function() {
-  //   return chai.request(app)
-  //     .get('/api/fooooo')
-  //     .then(function(res) {
-  //       res.should.have.status(200);
-  //       res.should.be.json;
-  //     });
-  //   });
   describe('POST endpoint for new users', function() {
     it('should create a new user and send a 201 status code', function() {
       const newUser = {

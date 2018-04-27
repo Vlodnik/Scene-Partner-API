@@ -7,3 +7,4 @@ exports.JWT_SECRET = process.env.JWT_SECRET;
 exports.JWT_EXPIRY = process.env.JWT_EXPIRY || '7d';
 exports.IBM_USERNAME = process.env.IBM_USERNAME;
 exports.IBM_PASSWORD = process.env.IBM_PASSWORD;
+exports.IBM_URL = process.env.IBM_URL;

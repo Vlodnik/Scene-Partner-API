@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const morgan = require('morgan');
 const passport = require('passport');
+const ms = require('mediaserver');
 const mongoose = require('mongoose');
 mongoose.Promise = global.Promise;
 
@@ -28,13 +29,23 @@ app.use(cors());
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
+function setHeaders(res, path) {
+  res.setHeader('content-type', 'audio/mpeg');
+  res.setHeader('content-range', 'bytes 1779609-1779609/8945229');
+  res.setHeader('content-length', 1);
+}
+
 app.use('/users', usersRouter);
 app.use('/scenes', scenesRouter);
 app.use('/audio', audioRouter);
 
-app.get('/api/*', (req, res) => {
-  res.json({ ok: true });
-});
+app.use(express.static('public'));
+
+// app.get('/:mp3', (req, res) => {
+//   // ms.pipe(req, res, `public/${req.params.mp3}`)
+//   res.send(`http://localhost:8080/${req.params.mp3}.mp3`);
+// });
+
 
 let server;
 

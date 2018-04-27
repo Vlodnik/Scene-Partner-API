@@ -12,6 +12,7 @@
 
 
 # misc
+/public
 .DS_Store
 .env
 .env.local
