@@ -30,7 +30,6 @@ router.post('/', (req, res) => {
   console.log('Received request to audio POST endpoint');
   console.log(req.body);
 
-  // req.body.lines.forEach(line => {
     const params = {
       text: req.body.text,
       voice: 'en-US_AllisonVoice',
@@ -44,12 +43,9 @@ router.post('/', (req, res) => {
         console.log('Error synthesizing:', err);
       })
       .pipe(fs.createWriteStream(`public/${req.body.lineId}.mp3`)
-        .on('finish', function() {
-          res.status(201).send(filePath);
-        }));
-
-  // });
-
+      .on('finish', function() {
+        res.status(201).send(filePath);
+      }));
 
   // console.log(pipeline);
   // text_to_speech.synthesize(params, () => {
