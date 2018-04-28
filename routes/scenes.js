@@ -112,4 +112,24 @@ router.put('/:id', jsonParser, (req, res) => {
     });
 });
 
+router.delete('/:id', (req, res) => {
+  Scene
+    .findById(req.params.id)
+    .then(scene => {
+      if(scene.user === req.user.username) {
+        scene.remove()
+        .then(() => {
+          res.status(204).json({ message: 'Deleted!' });
+        });
+      } else {
+        const message = 'Unauthorized';
+        console.error(message);
+        return res.status(401).send(message);
+      }
+    })
+    .catch(err => {
+      res.status(500).json({ message: 'Internal server error: DELETE' });
+    });
+});
+
 module.exports = router;

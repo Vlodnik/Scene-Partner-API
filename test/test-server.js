@@ -286,4 +286,40 @@ describe('Scene-Partner API', function() {
     });
   });
 
+  describe('DELETE endpoint', function() {
+    it('deletes an existing scene based on ID', function() {
+      let testJwt;
+      let targetSceneId;
+
+      return User
+        .findOne()
+        .then(function(user) {
+          testJwt = createAuthToken(user.serialize());
+
+          return Scene
+            .findOne({ user: user.username })
+        })
+        .then(function(scene) {
+          targetSceneId = scene._id;
+
+          return chai.request(app)
+            .delete(`/scenes/${ targetSceneId }`)
+            .set('Authorization', `Bearer ${ testJwt }`)
+        })
+        .then(function(res) {
+          res.should.have.status(204);
+
+          return Scene
+            .findById(targetSceneId)
+        })
+        .then(function(scene) {
+          console.log(scene);
+          if(scene === null) {
+            return true.should.be.true;
+          }
+          // intentionally error if scene isn't null
+          true.should.be.false;
+        });
+    });
+  })
 });
