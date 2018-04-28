@@ -28,24 +28,27 @@ router.use(jsonParser);
 // endpoint for getting audio files
 router.post('/', (req, res) => {
   console.log('Received request to audio POST endpoint');
-  console.log(req.body);
 
-    const params = {
-      text: req.body.text,
-      voice: 'en-US_AllisonVoice',
-      accept: 'audio/mp3'
-    };
+  const filePath = `http://localhost:8080/${req.body.lineId}.mp3`;
 
-    const filePath = `http://localhost:8080/${req.body.lineId}.mp3`;
+  if(fs.existsSync(`public/${req.body.lineId}.mp3`)) {
+    return res.status(200).send(filePath);
+  }
 
-    text_to_speech.synthesize(params)
-      .on('error', function(err) {
-        console.log('Error synthesizing:', err);
-      })
-      .pipe(fs.createWriteStream(`public/${req.body.lineId}.mp3`)
-      .on('finish', function() {
-        res.status(201).send(filePath);
-      }));
+  const params = {
+    text: req.body.text,
+    voice: 'en-US_AllisonVoice',
+    accept: 'audio/mp3'
+  };
+
+  text_to_speech.synthesize(params)
+    .on('error', function(err) {
+      console.log('Error synthesizing:', err);
+    })
+    .pipe(fs.createWriteStream(`public/${req.body.lineId}.mp3`)
+    .on('finish', function() {
+      res.status(201).send(filePath);
+    }));
 
   // console.log(pipeline);
   // text_to_speech.synthesize(params, () => {
