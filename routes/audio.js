@@ -45,7 +45,7 @@ router.post('/', (req, res) => {
     .on('error', function(err) {
       console.log('Error synthesizing:', err);
     })
-    .pipe(fs.createWriteStream(`public/${req.body.lineId}.mp3`)
+    .pipe(fs.createWriteStream(`/tmp/${req.body.lineId}.mp3`)
     .on('finish', function() {
       res.status(201).send(filePath);
     }));
