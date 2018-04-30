@@ -7,9 +7,18 @@ const jsonParser = bodyParser.json();
 const TextToSpeechV1 = require('watson-developer-cloud/text-to-speech/v1');
 // const { pipeline } = require('stream');
 const fs = require('fs-extra');
-const ms = require('mediaserver');
+// const ms = require('mediaserver');
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3();
 
-const { IBM_USERNAME, IBM_PASSWORD, IBM_URL } = require('../config');
+const {
+  IBM_USERNAME,
+  IBM_PASSWORD,
+  IBM_URL,
+  AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY,
+  S3_BUCKET_NAME
+} = require('../config');
 
 const text_to_speech = new TextToSpeechV1({
   username: IBM_USERNAME,
@@ -35,78 +44,36 @@ router.post('/', (req, res) => {
     return res.status(200).send(filePath);
   }
 
-  const params = {
+  const IBMparams = {
     text: req.body.text,
     voice: 'en-US_AllisonVoice',
     accept: 'audio/mp3'
   };
 
-  text_to_speech.synthesize(params)
-    .on('error', function(err) {
-      console.log('Error synthesizing:', err);
-    })
-    .pipe(fs.createWriteStream(`/tmp/${req.body.lineId}.mp3`)
-    .on('finish', function() {
-      res.status(201).send(filePath);
-    }));
+  const s3params = {
+    Body: 'Hello world',
+    Bucket: S3_BUCKET_NAME,
+    Key: AWS_ACCESS_KEY_ID
+  }
 
-  // console.log(pipeline);
-  // text_to_speech.synthesize(params, () => {
-  //   res.pipe(fs.createWriteStream(`public/${req.body.lineId}.mp3`),
-  //     (err) => filePath)
-  //   }
-  // )
-  // .on('error', function(err) {
-  //   console.log('Error synthesizing:', err);
-  // })
-  // process.stdin.pipe();
+  // const audioFile = text_to_speech.synthesize(IBMparams)
 
-    // console.log(proces.stdin.pipe());
+  s3.putObject(params, function(err, data) {
+    if(err) {
+      console.log(err);
+    }
+    console.log(data);
+  });
 
-  // .pipeline(fs.createWriteStream(`public/${req.body.lineId}.mp3`),
-  //   (err) => res.status(201).send(filePath));
-
-  // async function createFile() {
-  //
-  // }
-
-  // res.status(201).send(filePath);
-
-  // 'http://localhost:8080/By8zPHChz.mp3'
-
-  // const createAudioFile = new Promise((resolve, reject) => {
-  //     resolve(text_to_speech.synthesize(params).on('error', function(err) {
-  //       console.log('Error:', err);
-  //     }).pipe(fs.createWriteStream(filePath)))
-  //
-  //     reject('Failed to create audio file');
-  // });
-  //
-  // function sendFilePath() {
-  //   createAudioFile
-  //     .then(filePath => {
-  //       console.log('from audio router, the filePath is', filePath);
-  //       res.status(201).send(filePath)
-  //     })
-  //     .catch(err => {
-  //       console.log(err);
-  //     });
-  // }
-  //
-  // sendFilePath();
-
-
-
-  // ms.pipe(req, res, filePath);
-
-  // res.send(`http://localhost:8080/${req.body.lineId}.mp3`);
-  // res.send('http://localhost:8080/HyJL7EA3M.mp3');
-
-
-  // fs.readFile(filePath, function(err, data) {
-  //   console.log(data);
-  //   res.send(data);
-  // });
+  //  THIS IS WORKING CODE, DON'T FORGET IT
+  // text_to_speech.synthesize(IBMparams)
+  //   .on('error', function(err) {
+  //     console.log('Error synthesizing:', err);
+  //   })
+  //   .pipe(fs.createWriteStream(`/tmp/${req.body.lineId}.mp3`)
+  //   .on('finish', function() {
+  //     res.status(201).send(filePath);
+  //   }));
 });
 
 router.get('/test', (req, res) => {
