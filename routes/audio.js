@@ -31,7 +31,7 @@ router.post('/', (req, res) => {
 
   const filePath = `http://localhost:8080/${req.body.lineId}.mp3`;
 
-  if(fs.existsSync(`public/${req.body.lineId}.mp3`)) {
+  if(fs.existsSync(`/tmp/${req.body.lineId}.mp3`)) {
     return res.status(200).send(filePath);
   }
 
