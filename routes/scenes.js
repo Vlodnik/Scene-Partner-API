@@ -13,7 +13,7 @@ mongoose.Promise = global.Promise;
 const { Scene } = require('../models');
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
-// router.use(jwtAuth); ADD THIS BACK IN ONCE ACCOUNT CREATION/LOGIN IS SUPPORTED
+router.use(jwtAuth);
 
 // GET endpoint for a user's scenes
 router.get('/', (req, res) => {
