@@ -27,6 +27,7 @@ router.use(jsonParser);
 
 // endpoint for user to sign in
 router.post('/login', localAuth, (req, res) => {
+  console.log(`Request user is: ${req.user}`);
   const authToken = createAuthToken(req.user.serialize());
   return res.json({ authToken });
 });

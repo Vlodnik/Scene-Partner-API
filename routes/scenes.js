@@ -55,7 +55,7 @@ router.post('/', jsonParser, (req, res) => {
   const newScene = {
     user: req.user.username,
     title: req.body.title,
-    editing: req.body.editing,
+    editing: req.body.editing || true,
     userCharacter: req.body.userCharacter || 'all',
     lines: req.body.lines || []
   };
@@ -63,7 +63,7 @@ router.post('/', jsonParser, (req, res) => {
   Scene
     .create(newScene)
     .then(scene => {
-      res.status(201).json(scene)
+      res.status(201).json(scene.serialize())
     })
     .catch(err => {
       res.status(500).json({ message: 'Internal server error: POST' });
