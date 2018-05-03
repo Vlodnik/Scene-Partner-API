@@ -230,9 +230,7 @@ describe('Scene-Partner API', function() {
           res.should.be.json;
           res.should.have.status(201);
           res.body.user.should.equal(newScene.user);
-          res.body.editing.should.equal(newScene.editing);
           res.body.title.should.equal(newScene.title);
-          res.body.userCharacter.should.equal(newScene.userCharacter);
         });
     });
   });
