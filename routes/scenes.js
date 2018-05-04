@@ -19,7 +19,8 @@ router.use(jwtAuth);
 router.get('/', (req, res) => {
   Scene
     .find({user: req.user.username})
-    .then(scenes => {
+    .then(_scenes => {
+      const scenes = _scenes.map(scene => scene.serialize());
       res.status(200).json(scenes);
     })
     .catch(err => {
