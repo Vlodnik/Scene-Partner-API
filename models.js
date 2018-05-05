@@ -11,6 +11,7 @@ const sceneSchema = mongoose.Schema({
   userCharacter: String,
   lines: [
     {
+      key: String,
       character: String,
       text: String
     }
