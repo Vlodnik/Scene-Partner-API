@@ -92,7 +92,6 @@ router.put('/:id', jsonParser, (req, res) => {
       newScene[field] = req.body[field]
     }
   });
-  console.log(`newScene is ${newScene}`);
 
   Scene
     .findById(req.params.id)
