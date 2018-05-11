@@ -32,8 +32,9 @@ mongoose.Promise = global.Promise;
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 router.use(jsonParser);
+router.use(jwtAuth);
 
-// endpoint for getting audio files
+// endpoint for creating audio files
 router.post('/', (req, res) => {
   console.log('Received request to audio POST endpoint');
 
@@ -44,7 +45,7 @@ router.post('/', (req, res) => {
 
   s3.getObject(getParams, function(err, data) {
     if(data) {
-      return res.status(200).send(`https://scene-partner-mp3s.s3.amazonaws.com/${req.body.lineId}.mp3`);
+      return res.status(200).json({ url: `https://scene-partner-mp3s.s3.amazonaws.com/${req.body.lineId}.mp3` });
     }
 
     const IBMparams = {
@@ -68,7 +69,7 @@ router.post('/', (req, res) => {
       const params = {Bucket: S3_BUCKET_NAME, Key: `${req.body.lineId}.mp3`, ACL: 'public-read', Body: pass};
       s3.upload(params, function(err, data) {
         // console.log(err, data);
-        res.status(201).send(data.Location)
+        res.status(201).json({ url: data.Location })
       });
 
       return pass;
@@ -83,10 +84,6 @@ router.post('/', (req, res) => {
   //   .on('finish', function() {
   //     res.status(201).send(filePath);
   //   }));
-});
-
-router.get('/test', (req, res) => {
-  res.send('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
 });
 
 module.exports = router;
