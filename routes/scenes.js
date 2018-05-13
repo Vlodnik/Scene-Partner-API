@@ -118,6 +118,7 @@ router.delete('/:id', (req, res) => {
     .findById(req.params.id)
     .then(scene => {
       if(scene.user === req.user.username) {
+        console.log(`Deleting scene ${ req.params.id }`);
         scene.remove()
         .then(() => {
           res.status(204).json({ message: 'Deleted!' });
