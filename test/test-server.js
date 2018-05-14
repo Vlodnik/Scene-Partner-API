@@ -130,6 +130,29 @@ describe('Scene-Partner API', function() {
     });
   });
 
+  describe('POST endpoint for refreshing jwts', function() {
+    it('should return a new jwt when given a previous one', function() {
+      let testUser;
+      let oldJwt;
+
+      return User
+        .findOne()
+        .then(function(user) {
+          testUser = user.username;
+          oldJwt = createAuthToken(user.serialize());
+        })
+        .then(function() {
+          return chai.request(app)
+            .post('/users/refresh')
+            .set('Authorization', `Bearer ${ oldJwt }`)
+        })
+        .then(function(res) {
+          res.should.be.json;
+          res.body.authToken.should.be.a.jwt;
+        });
+    })
+  });
+
   describe('POST endpoint for creating jwts on login', function() {
     it('should return a jwt when given correct username and password', function() {
       const testUser = {
@@ -305,13 +328,12 @@ describe('Scene-Partner API', function() {
             .set('Authorization', `Bearer ${ testJwt }`)
         })
         .then(function(res) {
-          res.should.have.status(204);
+          res.should.have.status(200);
 
           return Scene
             .findById(targetSceneId)
         })
         .then(function(scene) {
-          console.log(scene);
           if(scene === null) {
             return true.should.be.true;
           }

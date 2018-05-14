@@ -23,12 +23,20 @@ function createAuthToken(user) {
 };
 
 const localAuth = passport.authenticate('local', { session: false });
+const jwtAuth = passport.authenticate('jwt', { session: false });
 router.use(jsonParser);
 
 // endpoint for user to sign in
 router.post('/login', localAuth, (req, res) => {
   console.log(`Request user is: ${req.user}`);
   const authToken = createAuthToken(req.user.serialize());
+  return res.json({ authToken });
+});
+
+// endpoint for refreshing JWTs
+router.post('/refresh', jwtAuth, (req, res) => {
+  console.log(`User ${ req.user } is refreshing jwt`);
+  const authToken = createAuthToken(req.user);
   return res.json({ authToken });
 });
 

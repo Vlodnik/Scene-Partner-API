@@ -121,7 +121,7 @@ router.delete('/:id', (req, res) => {
         console.log(`Deleting scene ${ req.params.id }`);
         scene.remove()
         .then(() => {
-          res.status(204).json({ message: 'Deleted!' });
+          res.status(200).json({ message: 'Successfully deleted' });
         });
       } else {
         const message = 'Unauthorized';
