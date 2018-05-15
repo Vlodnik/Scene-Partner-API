@@ -13,7 +13,8 @@ const sceneSchema = mongoose.Schema({
     {
       key: String,
       character: String,
-      text: String
+      text: String,
+      saved: String
     }
   ]
 });
