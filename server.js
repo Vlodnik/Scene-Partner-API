@@ -49,9 +49,16 @@ app.use(express.static('public'));
 
 let server;
 
+const options = {
+  keepAlive: 30000,
+  connectTimeoutMS: 30000,
+  reconnectTries: 30,
+  reconnectInterval: 5000
+};
+
 function runServer(databaseUrl = DATABASE_URL, port = PORT) {
   return new Promise((resolve, reject) => {
-    mongoose.connect(databaseUrl, err => {
+    mongoose.connect(databaseUrl, options, err => {
       if(err) {
         return reject(err);
       }
@@ -69,6 +76,7 @@ function runServer(databaseUrl = DATABASE_URL, port = PORT) {
 }
 
 function closeServer() {
+
   return mongoose.disconnect().then(() => {
     return new Promise((resolve, reject) => {
       console.log('Closing server');
