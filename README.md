@@ -13,4 +13,5 @@ This API is part of a full-stack express application using Node.js and a MongoDB
 The app uses the Mongoose library to create models for user data, and to communicate
 with the database. The API is RESTful and CORS enabled. User authentication is handled
 with the Passport.js framework, and passwords are encrypted with bcrypt before being
-stored as secure hashes on a MongoDB database hosted on mLab.
+stored as secure hashes on a MongoDB database hosted on mLab. The frontend is written
+using React-Redux.
