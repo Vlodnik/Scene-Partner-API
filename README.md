@@ -1,6 +1,6 @@
 # <a href="https://goofy-goldstine-cd55e2.netlify.com/" target="_blank">Scene Partner</a>
 
-# #Introduction
+## Introduction
 Scene Partner is a line reading app that lets you run lines using your device. This repo
 houses the app's API, which has CRUD endpoints for the scenes users create. It also has
 user authentication endpoints that make use of Passport and JSON web tokens.
